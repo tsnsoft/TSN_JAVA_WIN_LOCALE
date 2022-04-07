@@ -345,7 +345,7 @@ public class Launch extends javax.swing.JFrame {
 
         Locale currentLocale = Locale.getDefault(); // Определяем текущую локаль
 
-        // Задаем формат вещественных чисел для используемой текущей локали
+        // Задаем денежный формат для используемой текущей локали
         NumberFormat cf = NumberFormat.getCurrencyInstance(currentLocale);
 
         // Задаем формат даты для используемой текущей локали
