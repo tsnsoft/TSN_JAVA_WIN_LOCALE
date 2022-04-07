@@ -1,5 +1,9 @@
-package gvs02_lab07_ui;
+package kz.tsn.win.locale;
 
+import java.text.DateFormat;
+import java.text.NumberFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.Locale;
 import java.util.ResourceBundle;
 import javax.swing.BorderFactory;
@@ -74,9 +78,10 @@ public class Launch extends javax.swing.JFrame {
                     .addComponent(jLabel3))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 49, Short.MAX_VALUE)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(jTextField2, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 280, Short.MAX_VALUE)
-                    .addComponent(jTextField1, javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(jTextField3)))
+                    .addComponent(jTextField1, javax.swing.GroupLayout.DEFAULT_SIZE, 254, Short.MAX_VALUE)
+                    .addComponent(jTextField2)
+                    .addComponent(jTextField3))
+                .addGap(26, 26, 26))
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -190,7 +195,7 @@ public class Launch extends javax.swing.JFrame {
 
         jPanel1.setBorder(javax.swing.BorderFactory.createTitledBorder("Выберите язык"));
 
-        jComboBox1.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Русский", "English", "Deutsch" }));
+        jComboBox1.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Русский", "English", "Deutsch", "Arabic" }));
         jComboBox1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jComboBox1ActionPerformed(evt);
@@ -277,31 +282,38 @@ public class Launch extends javax.swing.JFrame {
 
     private void jComboBox1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jComboBox1ActionPerformed
         // Выбор языка для программы (в первом окне)
-        String language = "", country = "";
+        String language = "ru", country = "RU";
         String selectedLanguage = jComboBox1.getSelectedItem().toString();
         switch (selectedLanguage) {
             case "Русский":
-                language = "";
-                country = "";
+                language = "ru";
+                country = "RU";
                 break;
             case "English":
                 language = "en";
                 country = "US";
                 break;
             case "Deutsch":
-                language = "ger";
+                language = "de";
                 country = "DE";
                 break;
+            case "Arabic":
+                language = "ar";
+                country = "DZ";
+                break;
         }
+
+        // Установка нужной локали для программы
+        Locale.setDefault(new Locale(language, country));
 
         // Определяем файл с текстовыми строками для нужного языка
         rb = ResourceBundle.getBundle("text", new Locale(language, country));
 
         // Устанавливаем нужные тексовые значения в компонте jList1
         jList1.setListData(new String[]{
-            rb.getString("jList1.imem1"), 
-            rb.getString("jList1.imem2"), 
-            rb.getString("jList1.imem3")});
+            rb.getString("jList1.item1"),
+            rb.getString("jList1.item2"),
+            rb.getString("jList1.item3")});
         jList1.getSelectionModel().setSelectionInterval(0, 0);
 
         // Устанавливаем нужные тексовые значения в компонентах первого окна
@@ -314,6 +326,7 @@ public class Launch extends javax.swing.JFrame {
         // Кнопка "Выбрать язык" (переход на второе окно)
         this.setVisible(false); // Скрываем первое окно
         jFrame1.setVisible(true); // Открываем второе окно
+        jFrame1.setLocationRelativeTo(null); // Делаем окно по-центру
 
         // Устанавливаем нужные тексовые значения в компонентах второго окна
         jFrame1.setTitle(rb.getString("jFrame.title"));
@@ -328,13 +341,31 @@ public class Launch extends javax.swing.JFrame {
         // Кнопка "Создать поздравление" (переход на третье окно)
         jFrame1.setVisible(false); // Скрываем второе окно
         jFrame2.setVisible(true); // Открываем третье окно
+        jFrame2.setLocationRelativeTo(null); // Делаем окно по-центру
+
+        Locale currentLocale = Locale.getDefault(); // Определяем текущую локаль
+
+        // Задаем формат вещественных чисел для используемой текущей локали
+        NumberFormat cf = NumberFormat.getCurrencyInstance(currentLocale);
+
+        // Задаем формат даты для используемой текущей локали
+        DateFormat df = SimpleDateFormat.getDateInstance(SimpleDateFormat.SHORT);
 
         // Устанавливаем нужные тексовые значения в компонентах третьего окна
         jFrame2.setTitle(rb.getString("jFrame.title"));
-        String congratulation = rb.getString("congratulation") + ", "
+        jButton3.setText(rb.getString("jButton3.text"));
+        
+        // Создаем строку поздравления
+        String congratulation = rb.getString("congratulation") + " "
                 + jTextField1.getText() + " "
                 + jTextField2.getText() + " "
-                + jTextField3.getText() + "!";
+                + jTextField3.getText() + "! \n"
+                + rb.getString("your_gift") + ": "
+                + cf.format(7777777.777) + " !\n"
+                + rb.getString("today") + ": "
+                + df.format(new Date());
+
+        // Устанавливаем строку поздравления в компонент
         jTextArea1.setText(congratulation);
     }//GEN-LAST:event_jButton2ActionPerformed
 
@@ -344,8 +375,8 @@ public class Launch extends javax.swing.JFrame {
     }//GEN-LAST:event_jButton3ActionPerformed
 
     private void formWindowOpened(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowOpened
-        // Инициализация языка при открытии первого окна
-        jComboBox1ActionPerformed(null);
+        // Инициализация языка при открытии первого окна (точка входа в программу)
+        jComboBox1ActionPerformed(null); // Иммитируем выбор языка пользвателем по-умолчанию
     }//GEN-LAST:event_formWindowOpened
 
     private void jList1ValueChanged(javax.swing.event.ListSelectionEvent evt) {//GEN-FIRST:event_jList1ValueChanged
